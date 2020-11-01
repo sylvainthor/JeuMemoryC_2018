@@ -1,0 +1,103 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <graph.h>
+#include <time.h>
+   
+void grille(int XFenetre, int YFenetre) {
+
+    int random, i, j, k, tab1[16];
+    srand(time(NULL));
+
+	/* initialisation grille de 4x4 soit 16 cases soit 8 doublons */
+  	
+
+	for(i=0; i<16;){
+  	  	random = rand() % 8;
+      	for(k=0,j=0; j<16; j++){
+        	if(tab1[j] == random){
+  	      	k++;
+        	}
+    	}
+      	if(k==0 || k==1){
+        	tab1[i] = random;
+        	/*printf("%4d", tab1[i]);*/
+        	i++;
+      	}
+    }
+   /*printf("\n");*/
+
+    /* je m'occupe dans ce bloc de charger les images du memory au préalable (dans un écran virtuel) afin d'optimiser l'usage de la mémoire */
+
+
+
+    /* images et grille */
+
+    couleur bleuclair = CouleurParComposante(179, 204, 255);
+    couleur blanc = CouleurParComposante(255, 255, 255);
+  	couleur rouge = CouleurParComposante(255, 179, 179);
+  	couleur gris = CouleurParComposante(204, 204, 204);
+  	couleur noir = CouleurParComposante(0, 0, 0);
+
+  	char fond[10] = "fond2.jpg";
+  	char image1[] = "image12.png";
+
+  	InitialiserGraphique();
+
+  		/*ChoisirEcran(5);
+  		ChargerImage(image1, 0, 0, 512, 462, XFenetre/9, YFenetre/9);*/
+
+  		ChoisirEcran(0);									/* fond d'écran */
+   		CreerFenetre(Maxx()/6/2,Maxy()/6,XFenetre,YFenetre);
+    	EffacerEcran(bleuclair);
+    	ChargerImageFond(fond);
+
+    	char str[20];
+    	k=0;
+
+		for(i=XFenetre/9; i<XFenetre; i=i+2*(XFenetre/9)){
+			for(j=YFenetre/9; j<YFenetre; j=j+2*(YFenetre/9), k++){
+				ChoisirCouleurDessin(blanc);	
+				RemplirRectangle(i,j,XFenetre/9,YFenetre/9);
+				ChoisirCouleurDessin(noir);
+				DessinerRectangle(i,j,XFenetre/9,YFenetre/9);
+				sprintf(str, "image%d.png", tab1[k]);
+				ChargerImage(str, i+5, j+5, 0, 0, XFenetre/9, YFenetre/9);
+				printf("%s", str);
+				/*CopierZone(5, 0, 0, 0, XFenetre/9, YFenetre/9, i, j);*/
+			}
+		}
+		printf("\n");
+
+	while(1) {	
+
+		while((SourisCliquee()!=1)) {
+
+		}
+
+
+	  	int x,y;
+
+	  	x=_X;
+	  	y=_Y;
+
+		for(i=XFenetre/9; i<XFenetre; i=i+2*(XFenetre/9)){
+			for(j=YFenetre/9; j<YFenetre; j=j+2*(YFenetre/9)){
+				if(_X > i && _Y > j){
+					if(_X < i+(XFenetre/9) && _Y < j+(YFenetre/9)){
+						printf("1\n");
+					}
+				}
+			}
+		}
+	}
+
+	Touche();
+	exit(1);
+}
+
+int main(void) {
+    
+    grille(900,900);
+
+  return EXIT_SUCCESS;
+}
